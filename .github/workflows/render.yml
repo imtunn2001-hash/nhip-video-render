@@ -1,0 +1,29 @@
+name: render-video
+on:
+  workflow_dispatch:
+    inputs:
+      don_id:
+        description: "Ma don Nhip"
+        required: true
+      spec_url:
+        description: "Link JSON mo ta video (link ky, het han sau 1 gio)"
+        required: true
+      upload_url:
+        description: "Link ky de tai MP4 len (het han sau 1 gio)"
+        required: true
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cai ffmpeg va font
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+      - name: Dung video
+        env:
+          SPEC_URL: ${{ inputs.spec_url }}
+          UPLOAD_URL: ${{ inputs.upload_url }}
+        run: |
+          echo "::add-mask::$SPEC_URL"
+          echo "::add-mask::$UPLOAD_URL"
+          python3 render.py
